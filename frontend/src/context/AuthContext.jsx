@@ -19,16 +19,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-   const login = async (userData) => {
-    try {
-      const response = await axios.post("http://localhost:3000/api/auth/login", userData);
-      console.log("login successful", response.data);
-      setUser(response.data); // You can adjust based on what your backend returns
-    } catch (e) {
-      console.error("Error in login", e);
-    }
-  };
-
+    const login = async (userData) => {
+  try {
+    const response = await axios.post("http://localhost:3000/api/auth/login", userData);
+    setUser(response.data);
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error("Login error:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || "Login failed"
+    };
+  }
+};
 
   return (
     <AuthContext.Provider value={{ user, signup , login}}>

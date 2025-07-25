@@ -7,22 +7,35 @@ import { useContext } from 'react'
 import { AuthContext } from '../context/AuthContext'
 
 function Login() {
-  const navigate=useNavigate()
-  const {login}=useContext(AuthContext);
-  const [showPassword, setShowPassword] = useState(false)
-   const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-     
-   async function handleLogin(e){
-      e.preventDefault();
-      const userData={email,password};
-      const response=await login(userData);
-      console.log("login response", response)
-      const {token, user}=response;
-      localStorage.setItem("token",token);
-      alert("login successful");
-      navigate("/")
+  const navigate = useNavigate();
+  const { login} = useContext(AuthContext);
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  async function handleLogin(e) {
+    e.preventDefault();
+
+    if (!email || !password) {
+      alert("Please fill in both fields");
+      return;
     }
+
+    const userData = { email, password };
+    const response = await login(userData);
+   console.log(response)
+    // Check if login was successful
+    if (response && response.success) {
+      // Store token in localStorage
+      localStorage.setItem("token", response.data.token);
+
+      alert("Login successful");
+      navigate("/");
+    } else {
+      alert(response?.message || "Login failed. Please check your credentials.");
+    }
+  }
+
   return (
     <div className='w-[100vw] h-[100vh] bg-gradient-to-l from-[#141414] to-[#0c2025] text-white flex flex-col items-center justify-start'>
 
