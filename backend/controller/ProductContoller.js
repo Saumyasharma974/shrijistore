@@ -1,9 +1,12 @@
 import Product from "../models/Products.model.js";
-import { v2 as cloudinary } from "cloudinary";
+import cloudinary from "../config/cloudinary.js";
 
 export const createProduct = async (req, res) => {
   try {
-  console.log("BODY:", JSON.stringify(req.body, null, 2));
+ console.log("FILE:", req.file); // 👈 this should not be undefined if image is received
+
+   console.log(req.body.imageUrl)
+    console.log("BODY:", JSON.stringify(req.body, null, 2));
 
 
 
@@ -16,7 +19,7 @@ export const createProduct = async (req, res) => {
 
     // Extract fields
     const { name, description, price, category, quantity } = req.body;
-
+   
     // Check for required fields
     if (!name || !description || !price || !category || !quantity) {
       return res.status(400).json({ message: "All fields are required" });
@@ -51,7 +54,7 @@ export const createProduct = async (req, res) => {
     });
 
   } catch (err) {
-  console.error("Product Creation Error:", err.message); // 👈 Will print string
+  console.error("Product Creation Error:", err); // 👈 Will print string
   res.status(500).json({ error: err.message }); // 👈 sends clean message
 }
 

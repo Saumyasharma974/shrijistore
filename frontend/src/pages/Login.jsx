@@ -8,7 +8,7 @@ import { AuthContext } from '../context/AuthContext'
 
 function Login() {
   const navigate = useNavigate();
-  const { login} = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,14 +23,25 @@ function Login() {
 
     const userData = { email, password };
     const response = await login(userData);
-   console.log(response)
+    console.log(response)
     // Check if login was successful
     if (response && response.success) {
       // Store token in localStorage
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify({
+        token: response.data.token,
+        role: response.data.user.role,
+      }));
+     if (response.data.user.role === "admin") {
+  navigate("/admin");
+  alert("Login successful as Admin");
+} else {
+  navigate("/");
+  alert("Login successful");
+}
 
-      alert("Login successful");
-      navigate("/");
+
+      
+     
     } else {
       alert(response?.message || "Login failed. Please check your credentials.");
     }
@@ -73,7 +84,7 @@ function Login() {
           <input
             type="email"
             placeholder="Enter email"
-              value={email}
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
             className='w-[90%] h-[40px] rounded-md px-3 bg-transparent border border-gray-400 placeholder-gray-300 focus:outline-none'
             required
@@ -84,7 +95,7 @@ function Login() {
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Enter password"
-               value={password}
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
               className='w-full bg-transparent outline-none text-white placeholder-gray-300'
               required
